@@ -1,16 +1,16 @@
 # low_vision_retargeting
 
-==== DESCRIPTION: =======================================================================
+======== DESCRIPTION: ========
 
 This script is a video processing script meant for prototyping visual enhancements for
 low vision patients
 
-==== REQUIREMENTS: ======================================================================
+======== REQUIREMENTS: ========
 
 Python 3.5.5 or higher (Anaconda)
 OpenCV 3.1.0
 
-==== HOW TO USE: ========================================================================
+======== HOW TO USE: ========
 
 Call script with required arguments at command line:
 
@@ -22,7 +22,7 @@ The script will run and will output the retargeted video
 There a few modifiable flags within the script to allow for easy usage. They are all 
 found at the top of the script file. They are all mostly self-explanatory.
 
-==== TO DOS: ===========================================================================
+======== TO DOS: ========
 
 - Fix grabcut of face
 - Optimize retargeting algorithm to minimize jitter
