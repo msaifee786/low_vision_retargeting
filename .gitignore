@@ -1,0 +1,10 @@
+# gitignore file:
+
+# Ignore example videos:
+/Example\ videos/*
+
+# Ignore test videos generated:
+retargeted_*.avi
+
+# Ignore temp files:
+.*

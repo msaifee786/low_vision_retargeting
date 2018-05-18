@@ -731,50 +731,21 @@ while (video.isOpened() and (len(retarget_video_queue) < num_frames_to_retarget)
 	# Also increment our frame count (mod detection rate)
 	previous_frame_gray = current_frame_gray;
 	ret, current_frame = video.read();
-	current_frame_gray = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
 	frame_count = (frame_count+1) % roi_detect_rate
 
 	# Preprocess frame
 	# This includes ROI detection and any object magnification
 	# Returns a modified frame and mask corresponding to ROIs
+	start_ts_preprocess = time.time();
 	current_frame, roi_rects = preprocess_frame(current_frame, frame_count);
+	elapsed_time_preprocess = time.time() - start_ts_preprocess
+	log_flag(debug_flag_time, "Preprocessing in {0} ms".format(math.trunc(1000*elapsed_time_preprocess)));
+
+	# Now that we've modified our frame, generate the grayscale:
 	current_frame_gray = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
-
-
-# 	Update our face trackers:
-# 	start_ts_face_tracking = time.time();
-# 	if (len(retarget_video_queue) % refresh_face_rate == 0):
-# 		look_for_new_faces(face_trackers, current_frame_gray);
-# 	else:
-# 		refresh_face_trackers(face_trackers, current_frame_gray);
-# 		
-# 	faces = face_trackers_to_rectangle_tuples(face_trackers);
-# 
-# 	elapsed_time_face_tracking = time.time() - start_ts_face_tracking;
-# 	log_flag(debug_flag_time, "Face tracking in {0} ms".format(math.trunc(1000*elapsed_time_face_tracking)));
-# 
-# 	Magnify faces:
-# 	start_ts_mag_faces = time.time();
-# 	
-# 	Then, modify current frame to magnify them (update gray version too)
-# 	current_frame, faces = magnify_areas_in_frame(current_frame, faces);
-# 	current_frame_gray = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
-# 	
-# 	elapsed_time_mag_faces = time.time() - start_ts_mag_faces;
-# 	log_flag(debug_flag_time, "Magnified faces in {0} ms".format(math.trunc(1000*elapsed_time_mag_faces)));
-
-
-	#start_ts_face_recog = time.time();	
-	#faces = detect_faces_in_frame(current_frame_gray);
-	#elapsed_time_face_recog = time.time() - start_ts_face_recog;
-	#log_flag(debug_flag_time, "Facial recognition in {0} ms".format(math.trunc(1000*elapsed_time_face_recog)));
-	
-
-
 
 	# Update our energy map:
 	energy_map = update_energy_map(previous_frame_gray, current_frame_gray, roi_rects);
-	
 	
 	
 	# Then, seam carve our current frame:
