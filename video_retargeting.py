@@ -31,7 +31,7 @@ from includes.frame_stream import Frame_Stream
 from includes.face_tracker import Face_Tracker
 from includes.retargeter import Retargeter
 from includes.logger import Logger
-import includes.image_funcs
+from includes.image_funcs import Image_Funcs
 
 # For testing - flag to enable test frames to show
 show_debug_frames = True;
@@ -146,7 +146,7 @@ while (input_video.more_frames_available() and (len(retarget_video_queue) < num_
 	# Then, magnify those faces. We get a new set of rectangles corresponding to the
 	# magnified regions
 	msg_logger.log_time('Face magnification', Logger.TIME_START);	
-	(current_frame, roi_rects) = image_funcs.magnify_areas_in_frame(current_frame, roi_rects);
+	(current_frame, roi_rects) = Image_Funcs.magnify_areas_in_frame(current_frame, roi_rects);
 	msg_logger.log_time('Face magnification', Logger.TIME_END);
 
 	# Now that we've modified our frame, give it back to frame_stream:
