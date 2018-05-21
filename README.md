@@ -26,7 +26,6 @@ Note that the helper modules are kept in the includes/ directory.
 
 ======== TO DOS: ========
 
-- Implement class definition for output frame stream
 - Fix grabcut of face
 - Optimize retargeting algorithm to minimize jitter
 - Differential face magnification based on who is talking
