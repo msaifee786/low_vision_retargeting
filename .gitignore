@@ -8,3 +8,6 @@ retargeted_*.avi
 
 # Ignore temp files:
 .*
+
+# Ignore python cache files
+/includes/__pycache__/*
