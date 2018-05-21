@@ -1,8 +1,8 @@
 ###############################################################################
-# frame_stream.py
+# input_frame_stream.py
 #
 # Description:
-#	Class definition for frame stream object. Handles:
+#	Class definition for input frame stream object. Handles:
 #		- Interface with input stream (abstracts it away from user)
 #		- Incoming frame stream, including current/previous frame
 #
@@ -18,7 +18,7 @@ import cv2
 import sys
 import numpy as np
 
-class Frame_Stream:
+class Input_Frame_Stream:
 
 	# Initializer method:
 	def __init__(self, video_path):

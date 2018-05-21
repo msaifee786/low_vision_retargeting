@@ -27,7 +27,8 @@ import numpy as np
 from collections import deque
 
 # Import our own written modules:
-from includes.frame_stream import Frame_Stream
+from includes.input_frame_stream import Input_Frame_Stream
+from includes.output_frame_stream import Output_Frame_Stream
 from includes.face_tracker import Face_Tracker
 from includes.retargeter import Retargeter
 from includes.logger import Logger
@@ -68,7 +69,7 @@ args = vars(ap.parse_args())
 # Instantiate some the objects we'll need:
 
 # Load input video into a new frame_stream object:
-input_video = Frame_Stream(args["video_path"]);
+input_video = Input_Frame_Stream(args["video_path"]);
 
 # Set up face tracker object to keep track of faces:
 roi_detect_rate = 10; # detect ROIs every 10 frames
@@ -111,9 +112,7 @@ output_x = frame_size_x - num_seams_to_remove_vertical;
 output_y = frame_size_y - num_seams_to_remove_horizontal;
 
 # Open the output video stream
-fourcc_code = cv2.VideoWriter_fourcc(*'MJPG');
-output_video = cv2.VideoWriter(output_video_name, fourcc_code, 25.0, (output_x, output_y));
-
+output_video = Output_Frame_Stream(output_video_name, output_x, output_y)
 
 
 
@@ -166,7 +165,7 @@ while (input_video.more_frames_available() and (len(retarget_video_queue) < num_
 	output_frame = (output_frame * 255.0).astype('u1')
 	
 	# Finally, save the retargeted frame:
-	output_video.write(output_frame);
+	output_video.write_output_frame(output_frame);
 	
 	# and save frames in queue to play after processing:
 	original_video_queue.append(input_video.get_current_frame());
@@ -183,7 +182,7 @@ while (input_video.more_frames_available() and (len(retarget_video_queue) < num_
 	
 # Now that we're all done, release our videos:
 input_video.close_stream();
-output_video.release();
+output_video.close_stream();
 cv2.destroyAllWindows();
 
 # Now play the frames:
