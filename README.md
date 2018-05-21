@@ -14,7 +14,7 @@ OpenCV 3.1.0
 
 Call script with required arguments at command line:
 
-$ python -v <input_video_path> -c <face_detection_cascade_file_path>
+$ python video_retargeting.py -v <input_video_path> -c <face_detection_cascade_file_path>
 
 The script will run and will output the retargeted video
 "retargeted_<input_video_file_name>.avi" in MJPEG format within the same directory.
@@ -22,11 +22,11 @@ The script will run and will output the retargeted video
 There a few modifiable flags within the script to allow for easy usage. They are all 
 found at the top of the script file. They are all mostly self-explanatory.
 
+Note that the helper modules are kept in the includes/ directory.
+
 ======== TO DOS: ========
 
+- Implement class definition for output frame stream
 - Fix grabcut of face
 - Optimize retargeting algorithm to minimize jitter
-- Convert script to OOP (maintaining state between frames is hard with functional programming)
 - Differential face magnification based on who is talking
-
-
