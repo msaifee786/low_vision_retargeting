@@ -25,6 +25,9 @@ import math
 import numpy as np
 from collections import deque
 
+# Import some of our written modules
+from includes.logger import Logger
+
 
 class Image_Funcs:
 
@@ -32,7 +35,7 @@ class Image_Funcs:
 	# Given a frame, and an array of quadruples (x,y,w,h) specifying rectangles, magnifies the
 	# area specified by the rectangles based on a scaling factor
 	# Returns a tuple (new_frame, enlarged_rects)
-	# NO ERROR CHECKING DONE TO MAKE SURE THAT SCALED REGION WILL FIT IN FRAME
+	# Error checks to ensure scaled rectangle fits in frame (will maximum fill up frame)
 	@staticmethod
 	def magnify_areas_in_frame(frame, array_of_rects):
 
@@ -52,10 +55,13 @@ class Image_Funcs:
 			# Grab the area of interest
 			rect = frame[y:y+h, x:x+w];
 		
+			# We want to make sure that the scaled rect will fit within the frame
+			scale_factor_fitted = min(min(float(frame.shape[0])/float(h), scale_factor), float(frame.shape[1])/float(w));
+		
 			#Scale area based on factor
-			scaled_rect = cv2.resize(rect, (int(w*scale_factor), int(h*scale_factor)));
-
-			# We know we have a face here, likely in the context of a head.
+			scaled_rect = cv2.resize(rect, (int(w*scale_factor_fitted), int(h*scale_factor_fitted)));
+									
+			# We know we have a face/ROI here, likely in the context of a head.
 			# Below is some sample code (currently commented out) to attempt to segment out
 			# the face from background
 		
@@ -100,9 +106,9 @@ class Image_Funcs:
 			center_y = y + int(h/2);
 
 			# Now, find where the new region will start (ie, corner point):
-			corner_x = center_x - int(scale_factor*w/2);
-			corner_y = center_y - int(scale_factor*h/2);
-
+			corner_x = center_x - int(scale_factor_fitted*w/2);
+			corner_y = center_y - int(scale_factor_fitted*h/2);
+			
 			# Clean the values, in case we are out of bounds:
 			# In case too close to 0,0
 			corner_x = max(corner_x, 0)
@@ -114,12 +120,12 @@ class Image_Funcs:
 
 			if (outer_corner_x >= output_frame.shape[1]):
 				outer_corner_x = output_frame.shape[1]-1;
-				corner_x = outer_corner_x - scaled_rect.shape[1];
+				corner_x = outer_corner_x - scaled_rect.shape[1]+1;
 
 			if (outer_corner_y >= output_frame.shape[0]):
 				outer_corner_y = output_frame.shape[0]-1;
-				corner_y = outer_corner_y - scaled_rect.shape[0];
-
+				corner_y = outer_corner_y - scaled_rect.shape[0]+1;
+				
 			# Now, add in our scaled ROI region
 			output_frame[corner_y:(corner_y+scaled_rect.shape[0]), corner_x:(corner_x+scaled_rect.shape[1])] = scaled_rect;
 
@@ -182,8 +188,8 @@ class Image_Funcs:
 			cv2.grabCut(frame, mask, (x,y,w,h), bgdModel, fgdModel, grabcut_iter_count, cv2.GC_INIT_WITH_RECT)
 
 			# Mask needs to be processed because it flags "definite" vs "probable" --> simplify
-			# Note -- this mask is 2d. We are dealing with frames with 3 color components, so
-			# mask will need to be broadcasted to appropriate dimensionality
+			# Note -- this mask array is 2d. We are dealing with frames with 3 color
+			# components, so mask will need to be broadcasted to appropriate dimensionality
 			mask = np.where((mask==2)|(mask==0),0, 255).astype('uint8');
 		
 			# Now, select our ROI rectangle and corresponding mask region
@@ -253,4 +259,6 @@ class Image_Funcs:
 			# And add rectangle to enlarged rect array:
 			enlarged_rects.append(new_rect);
 
+
+		return (output_frame, enlarged_rects);
 		

@@ -20,6 +20,8 @@ import numpy as np
 
 class Input_Frame_Stream:
 
+	webcam_port = 0;
+
 	# Initializer method:
 	def __init__(self, video_path):
 	

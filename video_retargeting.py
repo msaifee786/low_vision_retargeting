@@ -41,7 +41,7 @@ show_debug_frames = True;
 num_frames_to_retarget = 500;
 
 # Number of seams to be removed:
-num_seams_to_remove_vertical = 100;
+num_seams_to_remove_vertical = 0;
 num_seams_to_remove_horizontal = 0;
 
 ###############################################################################
@@ -58,7 +58,7 @@ num_seams_to_remove_horizontal = 0;
 
 # Construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video_path", required=True,
+ap.add_argument("-v", "--video_path",
 	help="path to input image file")
 ap.add_argument("-c", "--cascade", required=True,
 	help="path to cascade xml file for object ROI detection")
@@ -69,8 +69,19 @@ args = vars(ap.parse_args())
 # Instantiate some the objects we'll need:
 
 # Load input video into a new frame_stream object:
-input_video = Input_Frame_Stream(args["video_path"]);
-
+# Also set up output video name
+if args["video_path"] is None:
+	input_video = Input_Frame_Stream(Input_Frame_Stream.webcam_port);
+	output_video_name = "retargeted_webcame.avi";
+else:
+	input_video = Input_Frame_Stream(args["video_path"]);
+	
+	# Create filename for output video using input file name:
+	video_file_name = args["video_path"].split("/")[-1];
+	output_video_name = "retargeted_" + video_file_name.split(".")[0] + ".avi";
+	
+	
+	
 # Set up face tracker object to keep track of faces:
 roi_detect_rate = 10; # detect ROIs every 10 frames
 face_tracker_list = Face_Tracker(args["cascade"], roi_detect_rate);
@@ -102,10 +113,6 @@ frame_retargeter = Retargeter(frame_size_x, frame_size_y, num_seams_to_remove_ve
 
 
 # Setup stream for output video to be saved
-# Create filename for output video:
-# First, get only file name:
-video_file_name = args["video_path"].split("/")[-1];
-output_video_name = "retargeted_" + video_file_name.split(".")[0] + ".avi";
 
 # Grab dimensions of output video:
 output_x = frame_size_x - num_seams_to_remove_vertical;
