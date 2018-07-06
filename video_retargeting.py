@@ -72,7 +72,7 @@ args = vars(ap.parse_args())
 # Also set up output video name
 if args["video_path"] is None:
 	input_video = Input_Frame_Stream(Input_Frame_Stream.webcam_port);
-	output_video_name = "retargeted_webcame.avi";
+	output_video_name = "retargeted_webcam.avi";
 else:
 	input_video = Input_Frame_Stream(args["video_path"]);
 	

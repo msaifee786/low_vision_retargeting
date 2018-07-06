@@ -19,6 +19,9 @@ $ python video_retargeting.py -v <input_video_path> -c <face_detection_cascade_f
 The script will run and will output the retargeted video
 "retargeted_<input_video_file_name>.avi" in MJPEG format within the same directory.
 
+If no input video path is given, the script will default to webcam input and will output
+a video "retargeted_webcam.avi"
+
 There a few modifiable flags within the script to allow for easy usage. They are all 
 found at the top of the script file. They are all mostly self-explanatory.
 
